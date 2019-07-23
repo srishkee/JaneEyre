@@ -9,6 +9,9 @@
 #include <map>
 using namespace std;
 
+#undef min
+#undef max
+
 bool punctuationArr[127]; // LUT (maps punctuation -> bool)
 vector<string> chapterList; // List of chapters
 int totalNumberOfWords; // Total number of words in book 
@@ -322,7 +325,7 @@ struct Node // Represents leaf in Trie
 	bool isLeaf; // Marks if end of word 
 };
 
-// Helper Function: Adds word to the Trie
+// Helper Function: Adds word to Trie
 void addWordToTrie(Node* root, string word)
 {
 	Node* curr = root;
@@ -346,6 +349,7 @@ Node* createTrie()
 		string word = it.second;
 		word = setLowercase(word);
 		if(isAlphaWord(word)) addWordToTrie(root, word);
+		ctr++;
 	}
 	return root;
 }
@@ -377,6 +381,7 @@ Node* getNodeOfStrInTrie(Node* root, string startOfSentence)
 		curr = curr->children[pos]; 
 	}
 	return curr; // Points to a Node at the end of the startOfSentence prefix
+}
 
 // Optional Function#9
 vector<string> getAutocompleteSentence(string startOfSentence)
