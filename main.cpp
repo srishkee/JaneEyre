@@ -9,9 +9,6 @@
 #include <map>
 using namespace std;
 
-#undef min
-#undef max
-
 bool punctuationArr[127]; // LUT (maps punctuation -> bool)
 vector<string> chapterList; // List of chapters
 int totalNumberOfWords; // Total number of words in book 
