@@ -319,7 +319,7 @@ struct Node // Represents leaf in Trie
 {
 	Node() : children(26, NULL), isLeaf(false) {}; 
 	vector<Node*> children;
-	bool isLeaf;
+	bool isLeaf; // Marks if end of word 
 };
 
 // Helper Function: Adds word to the Trie
@@ -329,10 +329,7 @@ void addWordToTrie(Node* root, string word)
 	for (int i = 0; i < word.size(); i++)
 	{
 		int pos = (int)word[i] - 'a';
-		if(curr->children[pos] == NULL)
-		{
-			curr->children[pos] = new Node;
-		}
+		if(curr->children[pos] == NULL) curr->children[pos] = new Node;
 		curr = curr->children[pos]; 
 	}
 	curr->isLeaf = true; 
@@ -353,30 +350,41 @@ Node* createTrie()
 	return root;
 }
 
-// Helper Function: Gets all words in Trie and returns them as a vector
-vector<string> getAllWordsInTrie(Node* root, string str, int level, vector<string>& wordList)
+// Helper Function: Gets all words in Trie from a Node and returns them as a vector
+vector<string> getAllWordsInTrie(Node* root, string& startOfSentence, string str, int level, vector<string>& wordList)
 {
-	if (root->isLeaf && level != 0) wordList.push_back(str);
+	if (root->isLeaf && level != 0) wordList.push_back(startOfSentence+str); // Base Case (no return because words can still exist!)
 
-	for (int i = 0; i < 26; i++)
+	for (int i = 0; i < 26; i++) // Iterate over children 
 	{
 		if (root->children[i] != NULL)
 		{
-			str += (char)(97 + i);
-			getAllWordsInTrie(root->children[i], str, level+1, wordList); 
+			str += (char)('a' + i); // Add letter to string
+			getAllWordsInTrie(root->children[i], startOfSentence, str, level+1, wordList); // Recur
+			str.pop_back(); // Remove letter from string (now try new combination)
 		}
 	}
-	str.pop_back();
-
 	return wordList; 
 }
+
+// Returns Node where startOfSentence prefix ends  
+Node* getNodeOfStrInTrie(Node* root, string startOfSentence)
+{
+	Node* curr = root;
+	for (int i = 0; i < startOfSentence.size(); i++) 
+	{
+		int pos = (int)startOfSentence[i] - 'a';
+		curr = curr->children[pos]; 
+	}
+	return curr; // Points to a Node at the end of the startOfSentence prefix
 
 // Optional Function#9
 vector<string> getAutocompleteSentence(string startOfSentence)
 {
-	Node* root = createTrie();
+	Node* root = createTrie(); // Create Trie
 	vector<string> wordList;
-	getAllWordsInTrie(root, "", 0, wordList);
+	Node* curr = getNodeOfStrInTrie(root, startOfSentence); // Skip startOfSentence prefix in Trie
+	getAllWordsInTrie(curr, startOfSentence, "", 0, wordList); // Get all autocomplete words 
 	return wordList; 
 }
 
@@ -440,9 +448,9 @@ int main()
 	cout << "Sentence generated in author style: " << endl << sentence << endl << endl;
 
 	// 9. Get a list of all words beginning with a particular string (uses Trie data structure)
-	string wordToAutoComplete = "Thorn";
+	string wordToAutoComplete = "Ja";
 	cout << "Autocompleting word '" << wordToAutoComplete << "':" << endl;
-	vector<string> wordList = getAutocompleteSentence(wordToAutoComplete);
+	vector<string> wordList = getAutocompleteSentence(setLowercase(wordToAutoComplete));
 	for (string word : wordList)
 	{
 		cout << word << endl;
