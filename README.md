@@ -15,7 +15,7 @@ Consequently, the sentence returned by the method generateSentence() is surprisi
 
 2. In the list of "20 Least Frequent Words," many words are separated by a double dash ("--"), also reminiscent of older writing styles.
 As such, several of the words include a double-dash, because an empty space was not an a thorough-enough delimiter.
-While I have used the '--' as a delimiter in the generateSentence() method, it is worth noting that paying more attention to older diction styles would yield more accurate results.
+While I have used the '--' as a delimiter in the generateSentence() method, it is worth noting that paying more attention to older diction styles  could yield more accurate results.
 
 
 
